@@ -2,8 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.util.Random;
 
 /**
@@ -12,11 +14,11 @@ import java.util.Random;
 public class food extends JPanel {
 
     Random rg = new Random();
-    public Rectangle ch,a1;
+    public Rectangle a1;
     static int w=10,h=10;
-    static int choice = 4;
+    public static int choice = 4,x1=10,y1=10,x2=20,y2=10;
     public food (JFrame frame){
-        ch = new Rectangle(200,200,w,h);
+        //ch = new Rectangle(200,200,w,h);
         a1 = new Rectangle(250,250,10,10);
         frame.addKeyListener(new KeyAdapter() {
             @Override
@@ -37,7 +39,10 @@ public class food extends JPanel {
         super.paintComponent(g);
         this.setBackground(Color.BLACK);
         g.setColor(Color.WHITE);
-        g.fillRect(ch.x,ch.y,w,h);
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setStroke(new BasicStroke(10));
+        g2.draw(new Line2D.Float(x1,y2,x2,y2));
+        //g.fillRect(ch.x,ch.y,w,h);
         g.fillRect(a1.x,a1.y,10,10);
     }
 
@@ -49,34 +54,44 @@ public class food extends JPanel {
         frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        points.draw();
+        points.draws();
     }
 
-    public boolean overlap(Rectangle r){
-        return ch.x < r.x + r.width && ch.x + w > r.x && ch.y < r.y + r.height && ch.y + h > r.y;
+   public boolean overlap(Rectangle r){
+        return x2 < r.x + r.width && x2 + w > r.x && y2 < r.y + r.height && y2 + h > r.y;
     }
 
-    private void draw() {
+    private void draws() {
     for (int i=0;i<100000;i++){
-        if (!overlap(a1)){
+        if(!overlap(a1)){
         try {
-            Thread.sleep(20);
-            if (choice==4)
-            ch.x+=1;
-            if (choice==3)
-            ch.x-=1;
-            if (choice==2)
-            ch.y-=1;
-            if (choice==1)
-            ch.y+=1;
+            Thread.sleep(10);
+            if (choice==4){
+            x2+=1;
+            x1+=1;
+            }
+            if (choice==3) {
+                x1 -= 1;
+                x2 -= 1;
+            }
+            if (choice==2) {
+                y1 -= 1;
+                y2-=1;
+            }
+            if (choice==1) {
+                y1 += 1;
+                y2+=1;
+            }
             repaint();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }}
+        }
+        }
         else{
             a1.x = rg.nextInt(400);
             a1.y = rg.nextInt(400);
-            w+=w;
+            x1-=5;
+            x2+=5;
             repaint();
         }
 
